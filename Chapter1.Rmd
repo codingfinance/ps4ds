@@ -6,3 +6,16 @@ output: html_document
 ---
 
 This is a test file to check if everything is getting commited.
+
+Lets
+```{r}
+
+library(tidyverse)
+library(ggthemes)
+
+diamonds %>%
+  ggplot(aes(x = carat, y = price)) +
+  geom_point() +
+  theme_fivethirtyeight()
+
+```
