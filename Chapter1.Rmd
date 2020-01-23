@@ -7,7 +7,7 @@ output: html_document
 
 This is a test file to check if everything is getting commited.
 
-Lets
+Lets get a sample chart.
 ```{r}
 
 library(tidyverse)
