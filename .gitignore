@@ -5,3 +5,4 @@
 psds_data
 .ipynb_checkpoints/
 *.Rmd
+.DS_Store
