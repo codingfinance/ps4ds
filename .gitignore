@@ -4,3 +4,4 @@
 .Ruserdata
 psds_data
 .ipynb_checkpoints/
+*.Rmd
