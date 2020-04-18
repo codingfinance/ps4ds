@@ -5,7 +5,6 @@ Chapter 1 - Exploratory Data Analysis
 
 ``` r
 library(tidyverse)
-library(DT)
 ```
 
 Next we load all the data from the csv files.
@@ -65,3 +64,105 @@ weighted.mean(state$Murder.Rate, w = state$Population)
     ## [1] 4.445834
 
 #### Estimates of variability
+
+Variability or dispersion measures how close or spread out our data is.
+
+IQR measure the difference between 75th and the 25th percentile
+
+``` r
+IQR(state$Population)
+```
+
+    ## [1] 4847308
+
+Mean absolute deviation, measures the absolute value of the deviation
+from the mean.
+
+``` r
+mad(state$Population)
+```
+
+    ## [1] 3849870
+
+Since working with squared values is much easier than absolute values,
+standard deviation is more commonly used in statistics.
+
+``` r
+sd(state$Population)
+```
+
+    ## [1] 6848235
+
+The below code displays the percentile range for the murder rates.
+
+``` r
+quantile(state$Murder.Rate)
+```
+
+    ##     0%    25%    50%    75%   100% 
+    ##  0.900  2.425  4.000  5.550 10.300
+
+Boxplots are a quick way to visualize how our data is dispersed.
+
+``` r
+ggplot(state, aes(x = 1, y = Population/100000)) +
+  geom_boxplot() +
+  labs(y = 'Population') +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+```
+
+![](Chapter-1_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+We can also divide the states into different bins based on their
+populations.
+
+``` r
+state %>%
+  mutate(Population_bins = cut(Population, breaks = seq(min(Population),
+                                              max(Population),
+                                              length = 11),
+                     right = TRUE,
+                     include.lowest = TRUE)) %>%
+  group_by(Population_bins) %>% 
+  summarise(freq = n()) %>%
+  knitr::kable()
+```
+
+| Population\_bins      | freq |
+| :-------------------- | ---: |
+| \[5.64e+05,4.23e+06\] |   24 |
+| (4.23e+06,7.9e+06\]   |   14 |
+| (7.9e+06,1.16e+07\]   |    6 |
+| (1.16e+07,1.52e+07\]  |    2 |
+| (1.52e+07,1.89e+07\]  |    1 |
+| (1.89e+07,2.26e+07\]  |    1 |
+| (2.26e+07,2.62e+07\]  |    1 |
+| (3.36e+07,3.73e+07\]  |    1 |
+
+We can display the above data in the form of a histogram.
+
+``` r
+state %>%
+  ggplot(aes(x = Population/1000000)) +
+  geom_histogram(bins = 7) +
+  labs(x = 'Population in millions',
+       y = 'Frequency') +
+  scale_y_continuous(position = 'right')
+```
+
+![](Chapter-1_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+We can also display the density plot for the murder rates in USA.
+
+``` r
+state %>%
+  ggplot(aes(x = Murder.Rate)) +
+  geom_histogram(bins = 10) +
+  labs(x = 'Murder Rate',
+       y = 'Frequency') +
+  scale_y_continuous(position = 'right')
+```
+
+![](Chapter-1_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
