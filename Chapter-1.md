@@ -119,6 +119,18 @@ We can also divide the states into different bins based on their
 populations.
 
 ``` r
+state_abbr <- state %>%
+  mutate(Population_freq = cut(Population, breaks = seq(min(Population),
+                                                        max(Population),
+                                                        length = 11),
+                               right = TRUE,
+                               include.lowest = TRUE)) %>%
+  group_by(Population_freq) %>%
+  summarize(state = paste(Abbreviation, collapse=","), .drop=FALSE) %>%
+  complete(Population_freq, fill=list(state='')) %>%
+  na.omit() %>%
+  select(state)
+
 state %>%
   mutate(Population_bins = cut(Population, breaks = seq(min(Population),
                                               max(Population),
@@ -127,19 +139,20 @@ state %>%
                      include.lowest = TRUE)) %>%
   group_by(Population_bins) %>% 
   summarise(freq = n()) %>%
+  mutate(state = unlist(state_abbr)) %>%
   knitr::kable()
 ```
 
-| Population\_bins      | freq |
-| :-------------------- | ---: |
-| \[5.64e+05,4.23e+06\] |   24 |
-| (4.23e+06,7.9e+06\]   |   14 |
-| (7.9e+06,1.16e+07\]   |    6 |
-| (1.16e+07,1.52e+07\]  |    2 |
-| (1.52e+07,1.89e+07\]  |    1 |
-| (1.89e+07,2.26e+07\]  |    1 |
-| (2.26e+07,2.62e+07\]  |    1 |
-| (3.36e+07,3.73e+07\]  |    1 |
+| Population\_bins      | freq | state                                                                   |
+| :-------------------- | ---: | :---------------------------------------------------------------------- |
+| \[5.64e+05,4.23e+06\] |   24 | AK,AR,CT,DE,HI,ID,IA,KS,ME,MS,MT,NE,NV,NH,NM,ND,OK,OR,RI,SD,UT,VT,WV,WY |
+| (4.23e+06,7.9e+06\]   |   14 | AL,AZ,CO,IN,KY,LA,MD,MA,MN,MO,SC,TN,WA,WI                               |
+| (7.9e+06,1.16e+07\]   |    6 | GA,MI,NJ,NC,OH,VA                                                       |
+| (1.16e+07,1.52e+07\]  |    2 | IL,PA                                                                   |
+| (1.52e+07,1.89e+07\]  |    1 | FL                                                                      |
+| (1.89e+07,2.26e+07\]  |    1 | NY                                                                      |
+| (2.26e+07,2.62e+07\]  |    1 | TX                                                                      |
+| (3.36e+07,3.73e+07\]  |    1 | CA                                                                      |
 
 We can display the above data in the form of a histogram.
 
